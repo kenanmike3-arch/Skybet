@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Skybet.com - Wallet & Admin</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #1f1f1f;
+      color: white;
+    }
+    header {
+      background-color: #333;
+      padding: 20px;
+      text-align: center;
+      color: #ff69b4;
+      font-size: 32px;
+      font-weight: bold;
+    }
+    .container {
+      padding: 20px;
+      max-width: 600px;
+      margin: auto;
+    }
+    .section {
+      background-color: #2e2e2e;
+      border: 1px solid #555;
+      border-radius: 10px;
+      margin-bottom: 30px;
+      padding: 20px;
+    }
+    h2 {
+      color: #ff69b4;
+    }
+    button {
+      background-color: #ff69b4;
+      border: none;
+      padding: 10px 20px;
+      color: white;
+      border-radius: 5px;
+      margin: 5px 10px 10px 0;
+      cursor: pointer;
+    }
+    input[type="text"], input[type="number"] {
+      padding: 10px;
+      border-radius: 5px;
+      border: none;
+      width: 100%;
+      margin-top: 10px;
+      background-color: #333;
+      color: #fff;
+      font-size: 16px;
+    }
+    .wallet-address {
+      background-color: #444;
+      padding: 10px;
+      border-radius: 5px;
+      margin-top: 10px;
+      font-family: monospace;
+      word-break: break-all;
+    }
+    select {
+      padding: 10px;
+      border-radius: 5px;
+      background-color: #333;
+      color: white;
+      border: none;
+      margin-top: 10px;
+      width: 100%;
+    }
+  </style>
+</head>
+<body>
+  <header>SKYBET.COM</header>
+
+  <div class="container">
+
+    <div class="section">
+      <h2>Login</h2>
+      <button onclick="alert('Login with Google (not connected)')">Login with Google</button>
+      <button onclick="alert('Login with Email (not connected)')">Login with Email</button>
+    </div>
+
+    <div class="section">
+      <h2>Wallet</h2>
+      <p><strong>Balance:</strong> $<span id="balance">0.00</span></p>
+      <button onclick="addBalance(50)">+ Add $50 (Test Deposit)</button>
+      <button onclick="subtractBalance(10)">- Subtract $10 (Simulate Bet)</button>
+    </div>
+
+    <div class="section">
+      <h2>Bank Deposit</h2>
+      <p>Send to the following bank account:</p>
+      <div class="wallet-address">
+        Bank: Bank of Abyssinia<br />
+        Account Name: SKYBET<br />
+        Account Number: 129868627
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Crypto Deposit</h2>
+      <label for="crypto-select">Choose Currency:</label>
+      <select id="crypto-select" onchange="showAddress()">
+        <option value="btc">Bitcoin (BTC)</option>
+        <option value="eth">Ethereum (ETH)</option>
+        <option value="usdt">Tether (USDT)</option>
+      </select>
+      <div class="wallet-address" id="crypto-address">bc1qexamplebtcaddress000000000</div>
+    </div>
+
+    <div class="section">
+      <h2>Admin Panel (Manual Balance Update)</h2>
+      <p>Enter user email or ID and amount to add funds:</p>
+      <input type="text" id="admin-user" placeholder="User Email or ID" />
+      <input type="number" id="admin-amount" placeholder="Amount to Add" />
+      <button onclick="adminAddFunds()">Add Funds</button>
+    </div>
+  </div>
+
+  <script>
+    // Simulated single user balance stored locally
+    let balance = parseFloat(localStorage.getItem("balance")) || 0;
+    document.getElementById("balance").innerText = balance.toFixed(2);
+
+    function updateDisplay() {
+      document.getElementById("balance").innerText = balance.toFixed(2);
+      localStorage.setItem("balance", balance);
+    }
+
+    function addBalance(amount) {
+      balance += amount;
+      updateDisplay();
+      alert(`Added $${amount.toFixed(2)} to your balance.`);
+    }
+
+    function subtractBalance(amount) {
+      if (balance >= amount) {
+        balance -= amount;
+        updateDisplay();
+        alert(`Subtracted $${amount.toFixed(2)} from your balance.`);
+      } else {
+        alert("Not enough balance.");
+      }
+    }
+
+    function showAddress() {
+      const select = document.getElementById("crypto-select");
+      const addressBox = document.getElementById("crypto-address");
+      const value = select.value;
+
+      if (value === "btc") {
+        addressBox.innerText = "bc1qexamplebtcaddress000000000";
+      } else if (value === "eth") {
+        addressBox.innerText = "0xExampleEthereumAddress123456789";
+      } else if (value === "usdt") {
+        addressBox.innerText = "TRC20ExampleUSDTAddress99999999";
+      }
+    }
+
+    function adminAddFunds() {
+      const user = document.getElementById("admin-user").value.trim();
+      const amount = parseFloat(document.getElementById("admin-amount").value);
+
+      if (!user) {
+        alert("Please enter user email or ID.");
+        return;
+      }
+      if (isNaN(amount) || amount <= 0) {
+        alert("Please enter a valid amount.");
+        return;
+      }
+
+      // For demo, we only have one user (localStorage)
+      // In a real app, you'd lookup user and update balance server-side
+
+      balance += amount;
+      updateDisplay();
+      alert(`Admin added $${amount.toFixed(2)} to user "${user}".`);
+      
+      // Clear inputs
+      document.getElementById("admin-user").value = "";
+      document.getElementById("admin-amount").value = "";
+    }
+  </script>
+</body>
+</html>
